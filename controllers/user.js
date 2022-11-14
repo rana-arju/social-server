@@ -83,9 +83,16 @@ exports.register = async (req, res) => {
 };
 exports.activateAccount = async (req, res) => {
   try {
+    const validUser = req.user._id;
     const { token } = req.body;
     const user = jwt.verify(token, process.env.TOKEN_SECRET);
     const check = await User.findById(user.id);
+    if (validUser !== user) {
+      return res
+        .status(400)
+        .json({ message: "You don't have the authorization to complate this operation!" });
+    }
+
     if (check.verified === true) {
       return res
         .status(400)
@@ -105,12 +112,9 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "the email address you entered is not connected to an account",
-        });
+      return res.status(400).json({
+        message: "the email address you entered is not connected to an account",
+      });
     }
     const check = await bcrypt.compare(password, user.password);
     if (!check) {
@@ -119,15 +123,15 @@ exports.login = async (req, res) => {
       });
     }
     const token = generateToken({ id: user._id.toString() }, "7d");
-      res.send({
-        id: user._id,
-        username: user.username,
-        picture: user.picture,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        token: token,
-        verified: user.verified,
-        message: "Login Success! Please activate Your email to start",
+    res.send({
+      id: user._id,
+      username: user.username,
+      picture: user.picture,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      token: token,
+      verified: user.verified,
+      message: "Login Success! Please activate Your email to start",
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
