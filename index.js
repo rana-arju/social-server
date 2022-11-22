@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const fileUpload = require("express-fileupload");
+
 const app = express();
 require("dotenv").config();
 var cors = require("cors");
@@ -7,6 +9,8 @@ const {readdirSync} = require("fs");
 const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json())
+app.use(fileUpload({useTempFiles: true}));
+
 //routes
 readdirSync("./routes").map(r => app.use('/api/v1', require('./routes/' + r)))
 

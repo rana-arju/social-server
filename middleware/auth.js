@@ -3,7 +3,6 @@ exports.authUser = (req, res, next) => {
   try {
     let tmp = req.header("Authorization");
     const token = tmp && tmp.split(" ")[1];
-    console.log("token", token);
     if (!token) {
       return res.status(404).json({ message: "Unauthorize access" });
     }
