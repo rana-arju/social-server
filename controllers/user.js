@@ -64,12 +64,12 @@ exports.register = async (req, res) => {
     bDay,
     gender,
   }).save();
-  const emailVerificationToken = generateToken(
-    { id: user._id.toString() },
-    "30m"
-  );
-  const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
-  sendVerificationEmail(user.email, user.first_name, url);
+  // const emailVerificationToken = generateToken(
+  //   { id: user._id.toString() },
+  //   "30m"
+  // );
+  // const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
+  // sendVerificationEmail(user.email, user.first_name, url);
 
   const token = generateToken({ id: user._id.toString() }, "7d");
   res.send({
@@ -80,7 +80,8 @@ exports.register = async (req, res) => {
     last_name: user.last_name,
     token: token,
     verified: user.verified,
-    message: "Register Success! Please activate Your email to start",
+    message: "Register Success!",
+    // message: "Register Success! Please activate Your email to start",
   });
 };
 exports.activateAccount = async (req, res) => {
@@ -133,7 +134,7 @@ exports.login = async (req, res) => {
       last_name: user.last_name,
       token: token,
       verified: user.verified,
-      message: "Login Success! Please activate Your email to start",
+      message: "Login Success!",
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
