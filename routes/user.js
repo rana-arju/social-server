@@ -21,5 +21,5 @@ router.post("/finduser", finduser);
 router.post("/resetcodeverification", ResetPasswordCode);
 router.post("/ValidationResetCode", ValidationResetCode);
 router.post("/ChangePassword", ChangePassword);
-router.get("/getProfile/:username",authUser, getProfile);
+router.get("/getProfile/:username", getProfile);
 module.exports = router;

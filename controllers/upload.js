@@ -1,10 +1,11 @@
 const cloudinary = require("cloudinary");
 const fs = require("fs");
+const path = require("path");
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
   api_secret: process.env.CLOUD_API_SECRET,
-}); 
+});
 exports.uploadImages = async (req, res) => {
   try {
     const { path } = req.body;
@@ -17,23 +18,25 @@ exports.uploadImages = async (req, res) => {
     }
     res.json(images);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
-exports.listImage = async (req, res) => {
+exports.listImages = async (req, res) => {
   const { path, sort, max } = req.body;
+
   cloudinary.v2.search
     .expression(`${path}`)
-    .sort_by("public_id", `${sort}`)
+    .sort_by("created_at", `${sort}`)
     .max_results(max)
     .execute()
     .then((result) => {
       res.json(result);
     })
-    .catch ((error) => {
-    res.status(500).json({ message: error.message });
-  })
+    .catch((err) => {
+      console.log(err.error.message);
+    });
 };
+
 const uploadToCloudinary = async (file, path) => {
   return new Promise((resolve) => {
     cloudinary.v2.uploader.upload(
@@ -44,7 +47,7 @@ const uploadToCloudinary = async (file, path) => {
       (err, res) => {
         if (err) {
           removeTmp(file.tempFilePath);
-          res.status(400).json({ message: "Upload image failed" });
+          return res.status(400).json({ message: "Upload image failed." });
         }
         resolve({
           url: res.secure_url,
@@ -53,6 +56,7 @@ const uploadToCloudinary = async (file, path) => {
     );
   });
 };
+
 const removeTmp = (path) => {
   fs.unlink(path, (err) => {
     if (err) throw err;
