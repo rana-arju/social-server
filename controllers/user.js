@@ -226,14 +226,37 @@ exports.ChangePassword = async (req, res) => {
 exports.getProfile = async (req, res) => {
   try {
     const { username } = req.params;
-    console.log(username);
     const profile = await User.findOne({ username }).select("-password");
     if (!profile) {
       return res.json({ ok: false });
     }
-    const posts = await Post.find({ user: profile._id }).populate("user");
-    console.log(posts);
+    const posts = await Post.find({ user: profile._id })
+      .populate("user")
+      .sort({ createdAt: -1 });
     res.json({ ...profile.toObject(), posts });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateProfilePicture = async (req, res) => {
+  try {
+    const { url,id } = req.body;
+    await User.findByIdAndUpdate(id, {
+      picture: url,
+    });
+    res.json(url);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.updateProfileCover = async (req, res) => {
+  try {
+    const { url, id } = req.body;
+    await User.findByIdAndUpdate(id, {
+      cover: url,
+    });
+    res.json(url);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
