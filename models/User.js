@@ -123,6 +123,12 @@ const userSchema = mongoose.Schema (
       instagram: {
         type: String,
       },
+      facebook: {
+        type: String,
+      },
+      youtube: {
+        type: String,
+      },
     },
     savedPosts: [
       {

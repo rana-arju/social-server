@@ -241,7 +241,7 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfilePicture = async (req, res) => {
   try {
-    const { url,id } = req.body;
+    const { url, id } = req.body;
     await User.findByIdAndUpdate(id, {
       picture: url,
     });
@@ -257,6 +257,19 @@ exports.updateProfileCover = async (req, res) => {
       cover: url,
     });
     res.json(url);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.userDetailsUpdate = async (req, res) => {
+  try {
+    const { infos, id } = req.body;
+    const updated = await User.findByIdAndUpdate(
+      id,
+      { details: infos },
+      { new: true }
+    );
+    res.json(updated.details);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
