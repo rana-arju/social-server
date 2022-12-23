@@ -13,6 +13,7 @@ const {
   updateProfilePicture,
   updateProfileCover,
   userDetailsUpdate,
+  addFriend,
 } = require("../controllers/user");
 const { authUser } = require("../middleware/auth");
 const router = express.Router();
@@ -28,4 +29,5 @@ router.get("/getProfile/:username", authUser, getProfile);
 router.put("/updateProfilePicture", authUser, updateProfilePicture);
 router.put("/updateProfileCover", authUser, updateProfileCover);
 router.put("/userDetailsUpdate", authUser, userDetailsUpdate);
+router.put("/addFriend/:id", authUser, addFriend);
 module.exports = router;
