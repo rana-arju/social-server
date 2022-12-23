@@ -7,11 +7,11 @@ exports.authUser = (req, res, next) => {
       return res.status(404).json({ message: "Unauthorize access" });
     }
     if (token) {
-      jwt.verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
+      jwt.verify(token, process.env.TOKEN_SECRET, function (err, user) {
         if (err) {
           return res.status(403).send({ message: "Forbidden access" });
         }
-        req.decoded = decoded;
+        req.user = user;
         next();
       });
     }
