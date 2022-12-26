@@ -227,7 +227,8 @@ exports.getProfile = async (req, res) => {
   try {
     const { username } = req.params;
     const user = await User.findById(req.user.id);
-    const profile = await User.findOne({ username }).select("-password");
+    const profile = await User.findOne({ username })
+      .select("-password");
     const friendship = {
       friends: false,
       following: false,
@@ -257,6 +258,7 @@ exports.getProfile = async (req, res) => {
     const posts = await Post.find({ user: profile._id })
       .populate("user")
       .sort({ createdAt: -1 });
+    await profile.populate("friends", "first_name last_name picture username");
     res.json({ ...profile.toObject(), posts, friendship });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -348,6 +350,7 @@ exports.cancelRequest = async (req, res) => {
         });
         await sender.updateOne({
           $pull: { following: sender._id },
+          $pull: { following: receiver._id },
         });
         res.status(200).json({ message: "you successfully cancel request" });
       } else {
