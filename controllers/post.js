@@ -12,7 +12,7 @@ exports.createPost = async (req, res) => {
 exports.getAllPost = async (req, res) => {
   try {
     const posts = await Post.find()
-      .populate("user", "first_name last_name username picture gender verified")
+      .populate("user", "first_name last_name username picture gender verified cover")
       .sort({ createdAt: -1 });
     res.status(200).json(posts)
   } catch (error) {
