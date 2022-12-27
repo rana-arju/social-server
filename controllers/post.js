@@ -8,6 +8,23 @@ exports.createPost = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.comment = async (req, res) => {
+  try {
+    const {comment, image, postId} = req.body;
+    const newComment = await Post.findByIdAndUpdate(postId, {
+      $push: {
+        comments: {
+          comment: comment,
+          image: image,
+          commentBy: req.user.id
+        },
+      },
+    }, {new: true}).populate("comments: commentBy");
+    res,json(newComment.comment)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 exports.getAllPost = async (req, res) => {
   try {
