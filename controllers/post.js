@@ -10,17 +10,26 @@ exports.createPost = async (req, res) => {
 };
 exports.comment = async (req, res) => {
   try {
-    const {comment, image, postId} = req.body;
-    const newComment = await Post.findByIdAndUpdate(postId, {
-      $push: {
-        comments: {
-          comment: comment,
-          image: image,
-          commentBy: req.user.id
+    const { comment, image, postId } = req.body;
+    const newComments = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $push: {
+          comments: {
+            comment: comment,
+            image: image,
+            commentBy: req.user.id,
+            commentAt: new Date(),
+          },
         },
       },
-    }, {new: true}).populate("comments: commentBy");
-    res,json(newComment.comment)
+      { new: true }
+    ).populate(
+      "comments.commentBy",
+      "picture first_name last_name username commentAt"
+    );
+
+    res.json(newComments.comments);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -29,9 +38,12 @@ exports.comment = async (req, res) => {
 exports.getAllPost = async (req, res) => {
   try {
     const posts = await Post.find()
-      .populate("user", "first_name last_name username picture gender verified cover")
+      .populate(
+        "user",
+        "first_name last_name username picture gender verified cover"
+      )
       .sort({ createdAt: -1 });
-    res.status(200).json(posts)
+    res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
