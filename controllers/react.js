@@ -31,7 +31,6 @@ exports.reactPost = async (req, res) => {
 exports.getReacts = async (req, res) => {
   try {
     const reactsArray = await React.find({ postRef: req.params.id });
-    console.log("total", reactsArray);
     const newReacts = reactsArray.reduce((group, react) => {
       let key = react["react"];
       if (!group[key]) {
@@ -68,7 +67,6 @@ exports.getReacts = async (req, res) => {
       },
     ];
    
-    console.log(newReacts);
 
     const check = await React.findOne({
       postRef: req.params.id,
