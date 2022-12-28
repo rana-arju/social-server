@@ -258,7 +258,7 @@ exports.getProfile = async (req, res) => {
       .populate("user")
       .populate(
         "comments.commentBy",
-        "picture first_name last_name username commentAt"
+        "picture first_name last_name username commentAt -_id"
       )
       .sort({ createdAt: -1 });
     await profile.populate("friends", "first_name last_name picture username");
