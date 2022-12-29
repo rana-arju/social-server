@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 const Code = require("../models/Code");
 const generateCode = require("../helpers/generateCode");
 const Post = require("../models/Post");
+const { default: mongoose } = require("mongoose");
 
 exports.register = async (req, res) => {
   const {
@@ -592,7 +593,25 @@ exports.deleteSearchHistory = async (req, res) => {
       },
       { $pull: { search: { user: searchUser } } }
     );
-    res.json({status: "ok"})
+    res.json({ status: "ok" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.getFriendRequestsPageInfos = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+      .select("requests friends")
+      .populate("friends", "first_name last_name username picture")
+      .populate("requests", "first_name last_name username picture");
+    const sentRequest = await User.find({
+      requests: mongoose.Types.ObjectId(req.user.id),
+    }).select("first_name last_name username picture");
+    res.json({
+      friends: user.friends,
+      requests: user.requests,
+      sentRequest,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
