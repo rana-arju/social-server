@@ -531,3 +531,12 @@ exports.deleteRequest = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.search = async (req, res) => {
+  try {
+   const searchTerm = req.params.searchTerm;
+   const result = await User.find({$text: {$search: searchTerm}}).select("first_name last_name username picture")
+    res.json(result)
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
