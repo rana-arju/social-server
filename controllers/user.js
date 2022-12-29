@@ -533,9 +533,42 @@ exports.deleteRequest = async (req, res) => {
 };
 exports.search = async (req, res) => {
   try {
-   const searchTerm = req.params.searchTerm;
-   const result = await User.find({$text: {$search: searchTerm}}).select("first_name last_name username picture")
-    res.json(result)
+    const searchTerm = req.params.searchTerm;
+    const result = await User.find({ $text: { $search: searchTerm } }).select(
+      "first_name last_name username picture"
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.addToSearchHistory = async (req, res) => {
+  try {
+    const { searchUserId } = req.body;
+    const search = {
+      user: searchUserId,
+      createdAt: new Date(),
+    };
+    const user = await User.findById(req.user.id);
+    const check = user.search.find((x) => x.user.toString() === searchUserId);
+    if (check) {
+      await User.updateOne(
+        {
+          _id: req.user.id,
+          "search._id": check._id,
+        },
+        {
+          $set: { "search.$.createdAt": new Date() },
+        }
+      );
+    } else {
+      await User.findByIdAndUpdate(req.user.id, {
+        $push: {
+          search,
+        },
+      });
+    }
+    res.json({ status: "ok" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
