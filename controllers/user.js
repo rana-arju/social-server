@@ -573,3 +573,27 @@ exports.addToSearchHistory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.getToSearchHistory = async (req, res) => {
+  try {
+    const results = await User.findById(req.user.id)
+      .select("search")
+      .populate("search.user", "first_name last_name username picture");
+    res.json(results.search);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.deleteSearchHistory = async (req, res) => {
+  try {
+    const { searchUser } = req.body;
+    await User.updateOne(
+      {
+        _id: req.user.id,
+      },
+      { $pull: { search: { user: searchUser } } }
+    );
+    res.json({status: "ok"})
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
