@@ -6,7 +6,7 @@ exports.reactPost = async (req, res) => {
     const { postId, react } = req.body;
     const check = await React.findOne({
       postRef: postId,
-      reactBy: req.user.id,
+      reactBy: mongoose.Types.ObjectId(req.user.id),
     });
     if (check == null) {
       const newReact = new React({
@@ -35,13 +35,10 @@ exports.getReacts = async (req, res) => {
     const reactsArray = await React.find({ postRef: req.params.id });
     const newReacts = reactsArray.reduce((group, react) => {
       let key = react["react"];
-      if (!group[key]) {
-        group[key] =group[key] || [];
-        group[key].push(react);
-        return group;
-        
-      }
-    },{})
+      group[key] = group[key] || [];
+      group[key].push(react);
+      return group;
+    }, {});
     const reacts = [
       {
         react: "like",
