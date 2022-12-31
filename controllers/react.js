@@ -24,6 +24,7 @@ exports.reactPost = async (req, res) => {
         });
       }
     }
+    res.json({status: "ok"})
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
