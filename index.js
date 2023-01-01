@@ -9,12 +9,16 @@ const { readdirSync } = require("fs");
 const port = process.env.PORT || 5000;
 
 const corsOptions = {
-  origin: "https://daily-connect.vercel.app",
+  methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "DELETE"],
+  origin: [
+    "https://daily-connect.vercel.app",
+    "http://daily-connect.vercel.app",
+    "http://localhost:3000",
+  ],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
-
 
 app.use(express.json());
 
