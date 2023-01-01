@@ -10,11 +10,7 @@ const port = process.env.PORT || 5000;
 
 const corsOptions = {
   methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "DELETE"],
-  origin: [
-    "https://daily-connect.vercel.app",
-    "http://daily-connect.vercel.app",
-    "http://localhost:3000",
-  ],
+  origin: "*",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
