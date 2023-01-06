@@ -10,7 +10,11 @@ const port = process.env.PORT || 5000;
 
 const corsOptions = {
   methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "DELETE"],
-  origin: ["http://localhost:3000", "https://daily-connect.vercel.app"],
+  origin: [
+    "http://localhost:3000",
+    "https://daily-connect.vercel.app",
+    "https://res.cloudinary.com",
+  ],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
@@ -24,7 +28,7 @@ app.use(fileUpload({ useTempFiles: true }));
 readdirSync("./routes").map((r) =>
   app.use("/api/v1", require("./routes/" + r))
 );
-console.log("hello");
+
 //database connect
 mongoose
   .connect(process.env.DB_URL, {
