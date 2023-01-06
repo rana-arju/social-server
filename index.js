@@ -8,13 +8,13 @@ var cors = require("cors");
 const { readdirSync } = require("fs");
 const port = process.env.PORT || 5000;
 
-// const corsOptions = {
-//   methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "DELETE"],
-//   origin: "*",
-//   credentials: true, //access-control-allow-credentials:true
-//   optionSuccessStatus: 200,
-// };
-app.use(cors());
+const corsOptions = {
+  methods: ["GET", "POST", "PUT", "PATCH", "HEAD", "DELETE"],
+  origin: ["http://localhost:3000", "https://daily-connect.vercel.app"],
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors({ corsOptions }));
 
 app.use(express.json());
 
