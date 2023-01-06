@@ -24,7 +24,7 @@ app.use(fileUpload({ useTempFiles: true }));
 readdirSync("./routes").map((r) =>
   app.use("/api/v1", require("./routes/" + r))
 );
-
+console.log("hello");
 //database connect
 mongoose
   .connect(process.env.DB_URL, {
